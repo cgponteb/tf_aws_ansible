@@ -50,18 +50,18 @@ data "aws_availability_zones" "azs" {
 
 # Create subnet #1 in us-east-1
 resource "aws_subnet" "subnet_1" {
-  provider          = aws.region_master
-  availability_zone = element(data.aws_availability_zones.azs.zone_ids, 0)
-  vpc_id            = aws_vpc.vpc_master.id
-  cidr_block        = "10.0.1.0/24"
+  provider             = aws.region_master
+  availability_zone_id = element(data.aws_availability_zones.azs.zone_ids, 0)
+  vpc_id               = aws_vpc.vpc_master.id
+  cidr_block           = "10.0.1.0/24"
 }
 
 # Create subnet #2 in us-east-1
 resource "aws_subnet" "subnet_2" {
-  provider          = aws.region_master
-  availability_zone = element(data.aws_availability_zones.azs.zone_ids, 1)
-  vpc_id            = aws_vpc.vpc_master.id
-  cidr_block        = "10.0.2.0/24"
+  provider             = aws.region_master
+  availability_zone_id = element(data.aws_availability_zones.azs.zone_ids, 1)
+  vpc_id               = aws_vpc.vpc_master.id
+  cidr_block           = "10.0.2.0/24"
 }
 
 # Create subnet #º in us-west-2
@@ -152,6 +152,6 @@ resource "aws_route_table" "internet_route_oregon" {
 # Overwrite default route table of VPC(Worker) with our route table entries
 resource "aws_main_route_table_association" "set_worker_default_rt_assoc" {
   provider       = aws.region_worker
-  vpc_id         = aws_vpc.vpc_master.id
+  vpc_id         = aws_vpc.vpc_master_oregon.id
   route_table_id = aws_route_table.internet_route_oregon.id
 }

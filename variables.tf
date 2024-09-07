@@ -1,6 +1,6 @@
 variable "profile" {
   type    = string
-  default = "default"
+  default = "acg_aws"
 }
 
 variable "region_master" {

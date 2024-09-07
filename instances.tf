@@ -20,14 +20,14 @@ data "aws_ssm_parameter" "linux_ami_oregon" {
 resource "aws_key_pair" "master_key" {
   provider   = aws.region_master
   key_name   = "jenkins"
-  public_key = var.public_key_path
+  public_key = file(var.public_key_path)
 }
 
 # Create key pair for logging into EC2 in us-west-2
 resource "aws_key_pair" "worker_key" {
   provider   = aws.region_worker
   key_name   = "jenkins"
-  public_key = var.public_key_path
+  public_key = file(var.public_key_path)
 }
 
 ####################################
@@ -81,16 +81,16 @@ ansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name} master
 EOF
   }
 
-  provisioner "remote-exec" {
-    when = destroy
-    inline = [
-      "java -jar /home/ec2-user/jenkins-cli.jar -auth @home/ec2-user/jenkins-auth -s https:// ${aws_instance.jenkins_master.private_ip}:8080 delete-node ${self.private_ip}"
-    ]
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = file("../.ssh/id_rsa")
-      host        = self.public_ip
-    }
-  }
+  # provisioner "remote-exec" {
+  #   when = destroy
+  #   inline = [
+  #     "java -jar /home/ec2-user/jenkins-cli.jar -auth @home/ec2-user/jenkins-auth -s https:// ${aws_instance.jenkins_master.private_ip}:8080 delete-node ${self.private_ip}"
+  #   ]
+  #   connection {
+  #     type        = "ssh"
+  #     user        = "ec2-user"
+  #     private_key = file("../.ssh/id_rsa")
+  #     host        = self.public_ip
+  #   }
+  # }
 }
